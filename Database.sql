@@ -1,5 +1,5 @@
 CREATE TABLE Customers(
-customer_id INT PRIMARY KEY AUTO_INCREMENT ,
+customer_id INT PRIMARY KEY AUTO_INCREMENT,
 Name VARCHAR(50),
 Address VARCHAR(100),
 Mobile_Number VARCHAR(55),
@@ -14,7 +14,7 @@ Vehicle_Model VARCHAR(25) NOT NULL
 
 CREATE TABLE Quality(
 Qid INT PRIMARY KEY AUTO_INCREMENT,
-type VARCHAR(15)
+Quality float
 );
 
 CREATE TABLE Inventory(
@@ -55,7 +55,7 @@ FROM Orders
 WHERE Packing_Type = '';
 
 CREATE VIEW search_by_name AS
-SELECT Customers.Name, Orders.order_id, Orders.status, Orders.qunatity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
+SELECT Customers.Name, Orders.order_id, Orders.status, Orders.quantity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
 FROM Orders LEFT JOIN Customers
 ON Orders.customer_id = Customers.customer_id
 WHERE Comments = '';
