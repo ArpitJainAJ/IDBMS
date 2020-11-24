@@ -51,7 +51,7 @@ CONSTRAINT fk6 FOREIGN KEY (status_id) REFERENCES Status(status_id)
 
 
 CREATE VIEW search_by_most_recent AS
-SELECT Customers.Name, Orders.order_id, Orders.status_id, Orders.qunatity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
+SELECT Customers.Name, Orders.order_id, Orders.status_id, Orders.quantity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
 FROM Orders LEFT JOIN Customers
 ON Orders.customer_id = Customers.customer_id
 WHERE Orders.Date IN ( SELECT MAX( Date ) FROM Orders) ORDER BY Orders.order_id ASC , Orders.Date DESC;
@@ -62,20 +62,20 @@ FROM Orders
 WHERE Packing_Type = '';
 
 CREATE VIEW search_by_name AS
-SELECT Customers.Name, Orders.order_id, Orders.status_id, Orders.qunatity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
+SELECT Customers.Name, Orders.order_id, Orders.status_id, Orders.quantity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
 FROM Orders LEFT JOIN Customers
 ON Orders.customer_id = Customers.customer_id
 WHERE Comments = '';
 
 CREATE VIEW search_by_name AS
-SELECT Customers.Name, Orders.order_id, Orders.status_id, Orders.qunatity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
+SELECT Customers.Name, Orders.order_id, Orders.status_id, Orders.quantity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
 FROM Orders LEFT JOIN Customers
 ON Orders.customer_id = Customers.customer_id
 WHERE Customers.Name = '';
 
 
 CREATE VIEW search_by_pending AS
-SELECT Customers.Name, Orders.order_id, Status.status, Orders.status_id, Orders.qunatity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
+SELECT Customers.Name, Orders.order_id, Status.status, Orders.status_id, Orders.quantity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
 FROM Customers
 JOIN Orders
   ON Customers.customer_id = Orders.customer_id
@@ -84,7 +84,7 @@ JOIN Status
   WHERE Status.status = 'pending';
   
 CREATE VIEW search_by_processed AS
-SELECT Customers.Name, Orders.order_id, Status.status, Orders.status_id, Orders.qunatity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
+SELECT Customers.Name, Orders.order_id, Status.status, Orders.status_id, Orders.quantity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
 FROM Customers
 JOIN Orders
   ON Customers.customer_id = Orders.customer_id
@@ -93,7 +93,7 @@ JOIN Status
   WHERE Status.status = 'processed';
   
 CREATE VIEW search_by_completed AS
-SELECT Customers.Name, Orders.order_id, Status.status, Orders.status_id, Orders.qunatity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
+SELECT Customers.Name, Orders.order_id, Status.status, Orders.status_id, Orders.quantity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
 FROM Customers
 JOIN Orders
   ON Customers.customer_id = Orders.customer_id
@@ -102,7 +102,7 @@ JOIN Status
   WHERE Status.status = 'completed';
   
 CREATE VIEW search_by_delivered AS
-SELECT Customers.Name, Orders.order_id, Status.status, Orders.status_id, Orders.qunatity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
+SELECT Customers.Name, Orders.order_id, Status.status, Orders.status_id, Orders.quantity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
 FROM Customers
 JOIN Orders
   ON Customers.customer_id = Orders.customer_id
