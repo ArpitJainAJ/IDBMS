@@ -38,9 +38,8 @@ Date DATETIME DEFAULT CURRENT_TIMESTAMP,
 status ENUM('pending', 'processed', 'completed', 'delivered') DEFAULT 'pending',
 CONSTRAINT fk3 FOREIGN KEY (quality_id) REFERENCES Quality(Qid),
 CONSTRAINT fk4 FOREIGN KEY (customer_id) REFERENCES Customers(customer_id),
-CONSTRAINT fk5 FOREIGN KEY (seat_cover_id) REFERENCES Seat_Covers(seat_cover_id),
+CONSTRAINT fk5 FOREIGN KEY (seat_cover_id) REFERENCES Seat_Covers(seat_cover_id)
 );
-
 
 /*views to search in orders*/
 
@@ -56,7 +55,7 @@ FROM Orders
 WHERE Packing_Type = '';
 
 CREATE VIEW search_by_name AS
-SELECT Customers.Name, Orders.order_id, Orders.status, Orders.quantity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
+SELECT Customers.Name, Orders.order_id, Orders.status, Orders.qunatity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
 FROM Orders LEFT JOIN Customers
 ON Orders.customer_id = Customers.customer_id
 WHERE Comments = '';
@@ -88,8 +87,9 @@ FROM Orders
 JOIN Customers
 ON Orders.customer_id = Customers.customer_id
 WHERE Orders.status = 'completed';
+
   
-CREATE VIEW search_by_completed AS
+CREATE VIEW search_by_delivered AS
 SELECT Customers.Name, Orders.order_id, Orders.status, Orders.quantity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
 FROM Orders
 JOIN Customers
@@ -101,12 +101,12 @@ WHERE Orders.status = 'delivered';
   CREATE VIEW  search_in_customers AS 
   SELECT *
   FROM Customers
-  WHERE Name = '' OR customer_id =  OR Address='' OR Mobile_Number = '' OR Company_Name = '' GST_No = '' ;
+  WHERE Name = '' OR customer_id = ''  OR Address='' OR Mobile_Number = '' OR Company_Name = '' OR GST_No = '' ;
   
   /* Insert query to place an order */
   
-  INSERT INTO Customers(Name, Address, Mobile_Number, Company_Name, GST_No) VALUES (  );
-  INSERT INTO Quality(type) VALUES ();
-  INSERT INTO Seat_Covers(Vehicle_Model) VALUES(  );
-  INSERT INTO Orders(order_id, customer_id, Label, Comments, Date, status, Packing_Type, seat_cover_id, quality, quantity) VALUES (  ); 
+  INSERT INTO Customers(Name, Address, Mobile_Number, Company_Name, GST_No) VALUES (  '','','','','' );
+  INSERT INTO Quality(type) VALUES ('');
+  INSERT INTO Seat_Covers(Vehicle_Model) VALUES( '' );
+  INSERT INTO Orders(order_id, customer_id, Label, Comments, status, Packing_Type, seat_cover_id, quality, quantity) VALUES ( '','','','','','','','',''  ); 
   
