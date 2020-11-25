@@ -14,7 +14,7 @@ Vehicle_Model VARCHAR(25) NOT NULL
 
 CREATE TABLE Quality(
 Qid INT PRIMARY KEY AUTO_INCREMENT,
-type FLOAT(15)
+type FLOAT(5)
 );
 
 CREATE TABLE Inventory(
