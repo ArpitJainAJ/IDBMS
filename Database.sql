@@ -1,5 +1,5 @@
 CREATE TABLE Customers(
-customer_id INT PRIMARY KEY AUTO_INCREMENT,
+customer_id INT PRIMARY KEY AUTO_INCREMENT ,
 Name VARCHAR(50),
 Address VARCHAR(100),
 Mobile_Number VARCHAR(55),
@@ -14,7 +14,7 @@ Vehicle_Model VARCHAR(25) NOT NULL
 
 CREATE TABLE Quality(
 Qid INT PRIMARY KEY AUTO_INCREMENT,
-Quality float
+type FLOAT(15)
 );
 
 CREATE TABLE Inventory(
@@ -55,7 +55,7 @@ FROM Orders
 WHERE Packing_Type = '';
 
 CREATE VIEW search_by_name AS
-SELECT Customers.Name, Orders.order_id, Orders.status, Orders.quantity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
+SELECT Customers.Name, Orders.order_id, Orders.status, Orders.qunatity, Orders.Label, Orders.Packing_Type, Orders.comments, Orders.Date
 FROM Orders LEFT JOIN Customers
 ON Orders.customer_id = Customers.customer_id
 WHERE Comments = '';
@@ -108,5 +108,41 @@ WHERE Orders.status = 'delivered';
   INSERT INTO Customers(Name, Address, Mobile_Number, Company_Name, GST_No) VALUES (  '','','','','' );
   INSERT INTO Quality(type) VALUES ('');
   INSERT INTO Seat_Covers(Vehicle_Model) VALUES( '' );
-  INSERT INTO Orders(order_id, customer_id, Label, Comments, status, Packing_Type, seat_cover_id, quality, quantity) VALUES ( '','','','','','','','',''  ); 
+  INSERT INTO Orders(customer_id, Label, Comments, status, Packing_Type, seat_cover_id, quality, quantity) VALUES ( '','','','','','','','',''  ); 
+  
+  /*Triggers*/
+  
+  
+  delimiter #
+  
+  CREATE TRIGGER update_inv_completed
+  AFTER UPDATE 
+  ON Orders
+  FOR EACH ROW
+  BEGIN
+  IF new.status = 'completed' THEN 
+	IF new.seat_cover_id IN (SELECT seat_cover_id FROM Inventory) THEN
+		UPDATE Inventory SET quantity = quantity + new.quantity WHERE seat_cover_id = new.seat_cover_id;
+  ELSE 
+		INSERT INTO Inventory(seat_cover_id, quantity, quality_id) VALUES (new.seat_cover_id, new.quantity, new.quality_id);
+        END IF; 
+  END IF;      
+  end#
+  
+  delimiter ;
+  
+  
+  delimiter #
+  
+  CREATE TRIGGER update_inv_delivered
+  AFTER UPDATE 
+  ON Orders
+  FOR EACH ROW
+  BEGIN
+  IF new.status = 'delivered' THEN 
+		UPDATE Inventory SET quantity = quantity - new.quantity WHERE seat_cover_id = new.seat_cover_id;
+  END IF;      
+  end#
+  
+  delimiter ;
   
