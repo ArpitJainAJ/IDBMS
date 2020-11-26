@@ -9,18 +9,50 @@ package Company1;
  *
  * @author arpit
  */
+import javax.swing.JTable;
+import javax.swing.table.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.sql.*;
+import javax.swing.JOptionPane;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 public class Main extends javax.swing.JFrame {
 
     /**
      * Creates new form Main
      */
-    public Main() {
+    final String DBURL = "jdbc:mysql://localhost:3306/test";
+    final String DBDriver = "com.mysql.jdbc.Driver";
+    String username = "root";
+    String password = "root";
+    Connection conn = null;
+    Statement stmt = null;
+    ResultSet rs = null;
+    int activeMenuItem = 1;
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/mm/dd HH:mm:ss");
+    String query = new String();
+    int row, column;
+    Orders neworder = new Orders();
+    Customers newcust = new Customers();
+    Seat_Covers sc = new Seat_Covers();
+    Inventory inv = new Inventory();
+    Quality quality = new Quality();
+    String SaveID = new String();
+    public Main() {    
+        try
+        {
+            conn = DriverManager.getConnection(DBURL, username, password);
+        }
+        catch(SQLException ex)
+        {
+            ex.printStackTrace();
+        }
         initComponents();
-        activateMenu2(false);
-        activateMenu3(false);
-        activateMenu4(false);
-        activateMenu5(false);
-        activateMenu1(true);
+        setinvisible();
+        activateMenu1();
     }
 
     /**
@@ -41,7 +73,6 @@ public class Main extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
@@ -51,8 +82,32 @@ public class Main extends javax.swing.JFrame {
         jTextField7 = new javax.swing.JTextField();
         jTextField8 = new javax.swing.JTextField();
         jTextField9 = new javax.swing.JTextField();
-        jTextField10 = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jLabel12 = new javax.swing.JLabel();
+        jTextField11 = new javax.swing.JTextField();
+        jButton3 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jCheckBox2 = new javax.swing.JCheckBox();
+        jCheckBox3 = new javax.swing.JCheckBox();
+        jCheckBox4 = new javax.swing.JCheckBox();
+        jCheckBox5 = new javax.swing.JCheckBox();
+        jCheckBox6 = new javax.swing.JCheckBox();
+        jCheckBox7 = new javax.swing.JCheckBox();
+        jCheckBox8 = new javax.swing.JCheckBox();
+        jButton6 = new javax.swing.JButton();
+        jTextField12 = new javax.swing.JTextField();
+        jTextField13 = new javax.swing.JTextField();
+        jTextField14 = new javax.swing.JTextField();
+        jTextField15 = new javax.swing.JTextField();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -60,9 +115,10 @@ public class Main extends javax.swing.JFrame {
         jMenu4 = new javax.swing.JMenu();
         jMenu5 = new javax.swing.JMenu();
         jMenu6 = new javax.swing.JMenu();
+        jMenu7 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(925, 525));
+        setPreferredSize(new java.awt.Dimension(1080, 768));
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Order ID");
@@ -91,10 +147,6 @@ public class Main extends javax.swing.JFrame {
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel9.setText("Order ID");
 
-        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setText("Order ID");
-
-        jTextField1.setText("jTextField1");
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
@@ -108,7 +160,7 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jTextField3.setText("jTextField1");
+        jTextField3.setText("jTextField1"); // NOI18N
         jTextField3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField3ActionPerformed(evt);
@@ -157,15 +209,147 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jTextField10.setText("jTextField1");
-        jTextField10.addActionListener(new java.awt.event.ActionListener() {
+        jLabel11.setText("jLabel11");
+
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField10ActionPerformed(evt);
+                jButton1ActionPerformed(evt);
             }
         });
 
-        jLabel11.setText("jLabel11");
+        jButton2.setText("jButton2");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
+        jComboBox1.setMaximumRowCount(9);
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Show All", "Name", "Address", "Mobile Number", "Company Name", "GST No" }));
+        jComboBox1.setAutoscrolls(true);
+        jComboBox1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jComboBox1MouseClicked(evt);
+            }
+        });
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+        jComboBox1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jComboBox1KeyReleased(evt);
+            }
+        });
+
+        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel12.setText("jLabel12");
+
+        jTextField11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField11ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("jButton3");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        jButton4.setText("jButton4");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setText("jButton5");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jCheckBox1.setText("jCheckBox1");
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+
+        jCheckBox2.setText("jCheckBox2");
+        jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox2ActionPerformed(evt);
+            }
+        });
+
+        jCheckBox3.setText("jCheckBox3");
+        jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox3ActionPerformed(evt);
+            }
+        });
+
+        jCheckBox4.setText("jCheckBox4");
+        jCheckBox4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox4ActionPerformed(evt);
+            }
+        });
+
+        jCheckBox5.setText("jCheckBox5");
+
+        jCheckBox6.setText("jCheckBox6");
+
+        jCheckBox7.setText("jCheckBox7");
+
+        jCheckBox8.setText("jCheckBox8");
+
+        jButton6.setText("jButton6");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
+        jTextField12.setText("jTextField12");
+
+        jTextField13.setText("jTextField13");
+
+        jTextField14.setText("jTextField14");
+
+        jTextField15.setText("jTextField15");
+
+        jButton7.setText("jButton7");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
+        jButton8.setText("jButton8");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
+        jMenuBar1.setBackground(new java.awt.Color(153, 255, 153));
         jMenuBar1.setFocusTraversalPolicyProvider(true);
 
         jMenu1.setText("Place an order");
@@ -242,17 +426,98 @@ public class Main extends javax.swing.JFrame {
         jMenuBar1.add(jMenu2);
 
         jMenu3.setText("Customers");
+        jMenu3.addMenuKeyListener(new javax.swing.event.MenuKeyListener() {
+            public void menuKeyPressed(javax.swing.event.MenuKeyEvent evt) {
+            }
+            public void menuKeyReleased(javax.swing.event.MenuKeyEvent evt) {
+                jMenu3MenuKeyReleased(evt);
+            }
+            public void menuKeyTyped(javax.swing.event.MenuKeyEvent evt) {
+            }
+        });
+        jMenu3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu3MouseClicked(evt);
+            }
+        });
+        jMenu3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenu3ActionPerformed(evt);
+            }
+        });
+        jMenu3.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jMenu3KeyReleased(evt);
+            }
+        });
         jMenuBar1.add(jMenu3);
 
-        jMenu4.setText("Seat_Covers");
+        jMenu4.setText("Seat Covers");
+        jMenu4.addMenuKeyListener(new javax.swing.event.MenuKeyListener() {
+            public void menuKeyPressed(javax.swing.event.MenuKeyEvent evt) {
+            }
+            public void menuKeyReleased(javax.swing.event.MenuKeyEvent evt) {
+                jMenu4MenuKeyReleased(evt);
+            }
+            public void menuKeyTyped(javax.swing.event.MenuKeyEvent evt) {
+            }
+        });
+        jMenu4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu4MouseClicked(evt);
+            }
+        });
+        jMenu4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenu4ActionPerformed(evt);
+            }
+        });
+        jMenu4.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jMenu4KeyReleased(evt);
+            }
+        });
         jMenuBar1.add(jMenu4);
 
         jMenu5.setText("Inventory");
+        jMenu5.addMenuKeyListener(new javax.swing.event.MenuKeyListener() {
+            public void menuKeyPressed(javax.swing.event.MenuKeyEvent evt) {
+            }
+            public void menuKeyReleased(javax.swing.event.MenuKeyEvent evt) {
+                jMenu5MenuKeyReleased(evt);
+            }
+            public void menuKeyTyped(javax.swing.event.MenuKeyEvent evt) {
+            }
+        });
+        jMenu5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu5MouseClicked(evt);
+            }
+        });
+        jMenu5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenu5ActionPerformed(evt);
+            }
+        });
+        jMenu5.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jMenu5KeyReleased(evt);
+            }
+        });
         jMenuBar1.add(jMenu5);
 
-        jMenu6.setText("Exit");
+        jMenu6.setText("Quality");
         jMenu6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jMenu6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jMenu6.addMenuKeyListener(new javax.swing.event.MenuKeyListener() {
+            public void menuKeyPressed(javax.swing.event.MenuKeyEvent evt) {
+            }
+            public void menuKeyReleased(javax.swing.event.MenuKeyEvent evt) {
+                jMenu6MenuKeyReleased(evt);
+            }
+            public void menuKeyTyped(javax.swing.event.MenuKeyEvent evt) {
+            }
+        });
         jMenu6.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jMenu6MouseClicked(evt);
@@ -270,6 +535,33 @@ public class Main extends javax.swing.JFrame {
         });
         jMenuBar1.add(jMenu6);
 
+        jMenu7.setText("Exit");
+        jMenu7.addMenuKeyListener(new javax.swing.event.MenuKeyListener() {
+            public void menuKeyPressed(javax.swing.event.MenuKeyEvent evt) {
+            }
+            public void menuKeyReleased(javax.swing.event.MenuKeyEvent evt) {
+                jMenu7MenuKeyReleased(evt);
+            }
+            public void menuKeyTyped(javax.swing.event.MenuKeyEvent evt) {
+            }
+        });
+        jMenu7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu7MouseClicked(evt);
+            }
+        });
+        jMenu7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenu7ActionPerformed(evt);
+            }
+        });
+        jMenu7.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jMenu7KeyReleased(evt);
+            }
+        });
+        jMenuBar1.add(jMenu7);
+
         setJMenuBar(jMenuBar1);
         jMenuBar1.getAccessibleContext().setAccessibleParent(this);
 
@@ -278,82 +570,174 @@ public class Main extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(51, 51, 51)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(41, 41, 41)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(51, 51, 51)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(41, 41, 41)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(76, 76, 76)
+                                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton3)
+                                .addGap(321, 321, 321)
+                                .addComponent(jButton5))
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(jButton1)
+                                .addGap(55, 55, 55)
+                                .addComponent(jButton2)
+                                .addGap(49, 49, 49)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 637, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jButton4)
+                                        .addGap(50, 50, 50)
+                                        .addComponent(jButton7)
+                                        .addGap(71, 71, 71)
+                                        .addComponent(jButton8))))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(66, 66, 66)
+                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(101, Short.MAX_VALUE)
-                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(645, 645, 645))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jCheckBox3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                        .addComponent(jTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jCheckBox4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextField15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jCheckBox1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jCheckBox2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jCheckBox5)
+                            .addComponent(jCheckBox6)
+                            .addComponent(jCheckBox7)
+                            .addComponent(jCheckBox8)
+                            .addComponent(jButton6))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jCheckBox1)
+                            .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jCheckBox2)
+                            .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jCheckBox3)
+                            .addComponent(jTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jCheckBox4)
+                            .addComponent(jTextField15, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jCheckBox5)
+                        .addGap(18, 18, 18)
+                        .addComponent(jCheckBox6)
+                        .addGap(18, 18, 18)
+                        .addComponent(jCheckBox7)
+                        .addGap(18, 18, 18)
+                        .addComponent(jCheckBox8)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton6))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel12)
+                            .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton3)
+                            .addComponent(jButton5))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(24, 24, 24)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(24, 24, 24)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(29, 29, 29)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(48, Short.MAX_VALUE))
+                    .addComponent(jButton4)
+                    .addComponent(jButton2)
+                    .addComponent(jButton1)
+                    .addComponent(jButton7)
+                    .addComponent(jButton8))
+                .addGap(0, 270, Short.MAX_VALUE))
         );
 
         pack();
@@ -395,17 +779,10 @@ public class Main extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField9ActionPerformed
 
-    private void jTextField10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField10ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField10ActionPerformed
-
     private void jMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu1ActionPerformed
         // TODO add your handling code here:
-        activateMenu2(false);
-        activateMenu3(false);
-        activateMenu4(false);
-        activateMenu5(false);
-        activateMenu1(true);
+        setinvisible();
+        activateMenu1();
     }//GEN-LAST:event_jMenu1ActionPerformed
 
     private void jMenu1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jMenu1FocusGained
@@ -424,213 +801,1678 @@ public class Main extends javax.swing.JFrame {
 
     private void jMenu1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jMenu1KeyReleased
         // TODO add your handling code here:
-        activateMenu2(false);
-        activateMenu3(false);
-        activateMenu4(false);
-        activateMenu5(false);
-        activateMenu1(true);
+        setinvisible();
+        activateMenu1();
     }//GEN-LAST:event_jMenu1KeyReleased
 
     private void jMenu1MenuKeyReleased(javax.swing.event.MenuKeyEvent evt) {//GEN-FIRST:event_jMenu1MenuKeyReleased
         // TODO add your handling code here:
-        activateMenu2(false);
-        activateMenu3(false);
-        activateMenu4(false);
-        activateMenu5(false);
-        activateMenu1(true);
+        setinvisible();
+        activateMenu1();
     }//GEN-LAST:event_jMenu1MenuKeyReleased
 
     private void jMenu1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseClicked
         // TODO add your handling code here:
-        activateMenu2(false);
-        activateMenu3(false);
-        activateMenu4(false);
-        activateMenu5(false);
-        activateMenu1(true);
+        setinvisible();
+        activateMenu1();
     }//GEN-LAST:event_jMenu1MouseClicked
 
     private void jMenu2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu2ActionPerformed
         // TODO add your handling code here:
-        activateMenu1(false);
-        activateMenu3(false);
-        activateMenu4(false);
-        activateMenu5(false);
-        activateMenu2(true);
+        setinvisible();
+        activateMenu2();
     }//GEN-LAST:event_jMenu2ActionPerformed
 
     private void jMenu2MenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_jMenu2MenuSelected
         // TODO add your handling code here:
-        //activateMenu2(true);
     }//GEN-LAST:event_jMenu2MenuSelected
 
     private void jMenu2MenuDeselected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_jMenu2MenuDeselected
         // TODO add your handling code here:
-        //activateMenu2(false);
     }//GEN-LAST:event_jMenu2MenuDeselected
 
     private void jMenu2KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jMenu2KeyReleased
         // TODO add your handling code here:
-        activateMenu1(false);
-        activateMenu3(false);
-        activateMenu4(false);
-        activateMenu5(false);
-        activateMenu2(true);
+        setinvisible();
+        activateMenu2();
     }//GEN-LAST:event_jMenu2KeyReleased
 
     private void jMenu2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu2MouseClicked
         // TODO add your handling code here:
-        activateMenu1(false);
-        activateMenu3(false);
-        activateMenu4(false);
-        activateMenu5(false);
-        activateMenu2(true);
+        setinvisible();
+        activateMenu2();
     }//GEN-LAST:event_jMenu2MouseClicked
 
     private void jMenu6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu6ActionPerformed
         // TODO add your handling code here:
-        activateMenu1(false);
-        activateMenu2(false);
-        activateMenu3(false);
-        activateMenu4(false);
-        activateMenu5(false);
-        activateMenu6(true);
+        setinvisible();
+        activateMenu6();
     }//GEN-LAST:event_jMenu6ActionPerformed
 
     private void jMenu6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu6MouseClicked
         // TODO add your handling code here:
-        activateMenu1(false);
-        activateMenu2(false);
-        activateMenu3(false);
-        activateMenu4(false);
-        activateMenu5(false);
-        activateMenu6(true);
+        setinvisible();
+        activateMenu6();
     }//GEN-LAST:event_jMenu6MouseClicked
 
     private void jMenu6KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jMenu6KeyReleased
         // TODO add your handling code here:
-        activateMenu1(false);
-        activateMenu2(false);
-        activateMenu3(false);
-        activateMenu4(false);
-        activateMenu5(false);
-        activateMenu6(true);
+        setinvisible();
+        activateMenu6();
     }//GEN-LAST:event_jMenu6KeyReleased
 
-    private void activateMenu1(Boolean b)
+    private void setinvisible()
     {
-        jLabel1.setVisible(b);
-        jLabel2.setVisible(b);
-        jLabel3.setVisible(b);
-        jLabel4.setVisible(b);
-        jLabel5.setVisible(b);
-        jLabel6.setVisible(b);
-        jLabel7.setVisible(b);
-        jLabel8.setVisible(b);
-        jLabel9.setVisible(b);
-        jLabel10.setVisible(b);
-        jLabel11.setVisible(b);
-        jTextField1.setVisible(b);
-        jTextField2.setVisible(b);
-        jTextField3.setVisible(b);
-        jTextField4.setVisible(b);
-        jTextField5.setVisible(b);
-        jTextField6.setVisible(b);
-        jTextField7.setVisible(b);
-        jTextField8.setVisible(b);
-        jTextField9.setVisible(b);
-        jTextField10.setVisible(b);
-        if(b==true)
-        {
-            jLabel1.setText("Order ID");
-            jLabel2.setText("Customer Name");
-            jLabel3.setText("Vehicle Type");
-            jLabel4.setText("Quality");
-            jLabel5.setText("Quantity");
-            jLabel6.setText("Packing Type");
-            jLabel7.setText("Label");
-            jLabel8.setText("Comments");
-            jLabel9.setText("Date");
-            jLabel10.setText("Status");
-            jLabel11.setText("Enter the order details");
-            jTextField1.setText("Order ID");
-            jTextField2.setText("Customer Name");
-            jTextField3.setText("Vehicle Type");
-            jTextField4.setText("Quality");
-            jTextField5.setText("Quantity");
-            jTextField6.setText("Packing Type");
-            jTextField7.setText("Label");
-            jTextField8.setText("Comments");
-            jTextField9.setText("Date");
-            jTextField10.setText("Status");
-        }
-    }
-    private void activateMenu2(Boolean b)
-    {
-        jLabel1.setVisible(b);
-        jLabel2.setVisible(b);
-        jLabel3.setVisible(b);
-        jLabel4.setVisible(b);
-        jLabel5.setVisible(b);
-        jLabel6.setVisible(b);
-        jLabel7.setVisible(b);
-        jLabel8.setVisible(b);
-        jLabel9.setVisible(b);
-        jLabel10.setVisible(b);
+        jLabel1.setVisible(false);
+        jLabel2.setVisible(false);
+        jLabel3.setVisible(false);
+        jLabel4.setVisible(false);
+        jLabel5.setVisible(false);
+        jLabel6.setVisible(false);
+        jLabel7.setVisible(false);
+        jLabel8.setVisible(false);
+        jLabel9.setVisible(false);
         jLabel11.setVisible(false);
-        jTextField1.setVisible(b);
-        jTextField2.setVisible(b);
-        jTextField3.setVisible(b);
-        jTextField4.setVisible(b);
-        jTextField5.setVisible(b);
-        jTextField6.setVisible(b);
-        jTextField7.setVisible(b);
-        jTextField8.setVisible(b);
-        jTextField9.setVisible(b);
-        jTextField10.setVisible(b);
-        if(b==true)
+        jLabel12.setVisible(false);
+        jTextField1.setVisible(false);
+        jTextField2.setVisible(false);
+        jTextField3.setVisible(false);
+        jTextField4.setVisible(false);
+        jTextField5.setVisible(false);
+        jTextField6.setVisible(false);
+        jTextField7.setVisible(false);
+        jTextField8.setVisible(false);
+        jTextField9.setVisible(false);
+        jTextField11.setVisible(false);
+        jTextField12.setVisible(false);
+        jTextField13.setVisible(false);
+        jTextField14.setVisible(false);
+        jTextField15.setVisible(false);
+        jComboBox1.setVisible(false);
+        jButton1.setVisible(false);
+        jButton2.setVisible(false);
+        jButton3.setVisible(false);
+        jButton4.setVisible(false);
+        jButton5.setVisible(false);
+        jButton6.setVisible(false);
+        jButton7.setVisible(false);
+        jButton8.setVisible(false);
+        DefaultTableModel model = new DefaultTableModel();
+        jTable1.setModel(model);
+        jTable1.setVisible(false);
+        jCheckBox1.setVisible(false);
+        jCheckBox2.setVisible(false);
+        jCheckBox3.setVisible(false);
+        jCheckBox4.setVisible(false);
+        jCheckBox5.setVisible(false);
+        jCheckBox6.setVisible(false);
+        jCheckBox7.setVisible(false);
+        jCheckBox8.setVisible(false);
+    }
+    private void jTextField11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField11ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField11ActionPerformed
+
+    private void jMenu3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu3ActionPerformed
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu3();
+    }//GEN-LAST:event_jMenu3ActionPerformed
+
+    private void jMenu3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jMenu3KeyReleased
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu3();
+    }//GEN-LAST:event_jMenu3KeyReleased
+
+    private void jMenu3MenuKeyReleased(javax.swing.event.MenuKeyEvent evt) {//GEN-FIRST:event_jMenu3MenuKeyReleased
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu3();
+    }//GEN-LAST:event_jMenu3MenuKeyReleased
+
+    private void jMenu3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu3MouseClicked
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu3();
+    }//GEN-LAST:event_jMenu3MouseClicked
+
+    private void jMenu4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu4ActionPerformed
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu4();
+    }//GEN-LAST:event_jMenu4ActionPerformed
+
+    private void jMenu4KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jMenu4KeyReleased
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu4();
+    }//GEN-LAST:event_jMenu4KeyReleased
+
+    private void jMenu4MenuKeyReleased(javax.swing.event.MenuKeyEvent evt) {//GEN-FIRST:event_jMenu4MenuKeyReleased
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu4();
+    }//GEN-LAST:event_jMenu4MenuKeyReleased
+
+    private void jMenu4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu4MouseClicked
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu4();
+    }//GEN-LAST:event_jMenu4MouseClicked
+
+    private void jMenu5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu5ActionPerformed
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu5();
+    }//GEN-LAST:event_jMenu5ActionPerformed
+
+    private void jMenu5KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jMenu5KeyReleased
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu5();
+    }//GEN-LAST:event_jMenu5KeyReleased
+
+    private void jMenu5MenuKeyReleased(javax.swing.event.MenuKeyEvent evt) {//GEN-FIRST:event_jMenu5MenuKeyReleased
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu5();
+    }//GEN-LAST:event_jMenu5MenuKeyReleased
+
+    private void jMenu5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu5MouseClicked
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu5();
+    }//GEN-LAST:event_jMenu5MouseClicked
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        if("Add Filters".equals(jButton5.getText()))
         {
-            jLabel1.setText("Order ID");
-            jLabel2.setText("Customer Name");
-            jLabel3.setText("Vehicle Type");
-            jLabel4.setText("Quality");
-            jLabel5.setText("Quantity");
-            jLabel6.setText("Packing Type");
-            jLabel7.setText("Label");
-            jLabel8.setText("Comments");
-            jLabel9.setText("Date");
-            jLabel10.setText("Status");
-            jTextField1.setText("Order ID");
-            jTextField2.setText("Customer Name");
-            jTextField3.setText("Vehicle Type");
-            jTextField4.setText("Quality");
-            jTextField5.setText("Quantity");
-            jTextField6.setText("Packing Type");
-            jTextField7.setText("Label");
-            jTextField8.setText("Comments");
-            jTextField9.setText("Date");
-            jTextField10.setText("Status");
+            jCheckBox1.setText("Quality");
+            jCheckBox2.setText("Comments");
+            jCheckBox3.setText("PackingType");
+            jCheckBox4.setText("Name");
+            jCheckBox5.setText("Status - Pending");
+            jCheckBox6.setText("Status - Processed");
+            jCheckBox7.setText("Status - Completed");
+            jCheckBox8.setText("Status - Delivered");
+            jButton5.setText("Cancel Filter");
+            jButton6.setText("Apply Filter");
+            jTextField12.setText("");
+            jTextField13.setText("");
+            jTextField14.setText("");
+            jTextField15.setText("");
+            jCheckBox1.setVisible(true);
+            jCheckBox2.setVisible(true);
+            jCheckBox3.setVisible(true);
+            jCheckBox4.setVisible(true);
+            jCheckBox5.setVisible(true);
+            jCheckBox6.setVisible(true);
+            jCheckBox7.setVisible(true);
+            jCheckBox8.setVisible(true);
+            jButton6.setVisible(true);
+            jCheckBox8.setVisible(true);
+            jTextField12.setVisible(true);
+            jTextField13.setVisible(true);
+            jTextField14.setVisible(true);
+            jTextField15.setVisible(true);
+        }
+        else
+        {
+            jButton5.setText("Add Filters");
+            jButton6.setVisible(false);
+            jCheckBox1.setVisible(false);
+            jCheckBox2.setVisible(false);
+            jCheckBox3.setVisible(false);
+            jCheckBox4.setVisible(false);
+            jCheckBox5.setVisible(false);
+            jCheckBox6.setVisible(false);
+            jCheckBox7.setVisible(false);
+            jCheckBox8.setVisible(false);
+            jTextField12.setVisible(false);
+            jTextField13.setVisible(false);
+            jTextField14.setVisible(false);
+            jTextField15.setVisible(false);
+            jTextField12.setText("");
+            jTextField13.setText("");
+            jTextField14.setText("");
+            jTextField15.setText("");
+            jCheckBox1.setSelected(false);
+            jCheckBox2.setSelected(false);
+            jCheckBox3.setSelected(false);
+            jCheckBox4.setSelected(false);
+            jCheckBox5.setSelected(false);
+            jCheckBox6.setSelected(false);
+            jCheckBox7.setSelected(false);
+            jCheckBox8.setSelected(false);
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+        activejComboBox1();
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    public void activejComboBox1()
+    {
+        switch(jComboBox1.getSelectedIndex())
+        {
+            case 0:
+                jButton3.setEnabled(true);
+                break;
+            case 1:
+                activateComboBox1Index1();
+                break;
+            case 2:
+                activateComboBox1Index2();
+                break;
+            case 3:
+                activateComboBox1Index3();
+                break;
+            case 4:
+                activateComboBox1Index4();
+                break;
+            case 5:
+                activateComboBox1Index5();
+                break;
+            default:
+                jLabel12.setVisible(false);
+                jTextField11.setVisible(false);
+                break;
         }
     }
-    private void activateMenu3(Boolean b)
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        int flag=0;
+        switch(activeMenuItem)
+        {
+            case 2:
+                flag = 0;
+                neworder.order_id = SaveID;
+                neworder.CustomerName = jTextField1.getText();
+                query = "Select customer_id from Customers where Name='"+neworder.CustomerName+"';";
+                try
+                {
+                    stmt = conn.createStatement();
+                    rs = stmt.executeQuery(query);
+                    if(rs.next())
+                    {
+                        neworder.customer_id = rs.getString("customer_id");
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(this, "This customer doesn't exist. Create one first");
+                        flag = 1;
+                    }
+                    try
+                    {
+                        if(!(rs.next())) rs.close();
+                        stmt.close();
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+                if(flag!=1)
+                {
+                    neworder.Label = jTextField2.getText();
+                    neworder.Comments = jTextField3.getText();
+                    neworder.date = jTextField4.getText();
+                    neworder.status = jTextField5.getText();
+                    if(neworder.checkstatus()==false)
+                    {
+                        flag=1;
+                        JOptionPane.showMessageDialog(this, "Status needs to be in pending/processed/completed/delivered");
+                    }
+                    if(flag!=1)
+                    {
+                        neworder.Packing_Type = jTextField6.getText();
+                        neworder.Vehicle_Type = jTextField7.getText();
+                        query = "Select seat_cover_id from Seat_Covers where Vehicle_model = '"+neworder.Vehicle_Type+"';";
+                        try
+                        {
+                            stmt = conn.createStatement();
+                            rs = stmt.executeQuery(query);
+                            if(rs.next())
+                            {
+                                neworder.seat_cover_id = rs.getString("Seat_cover_id");
+                            }
+                            else
+                            {
+                                JOptionPane.showMessageDialog(this, "This Vehicle Type doesn't exist. Create one first");
+                                flag = 1;
+                            }
+                            try
+                            {
+                                if(!(rs.next())) rs.close();
+                                stmt.close();
+                            }
+                            catch(SQLException se)
+                            {
+                                se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                            }
+                        }
+                        catch(SQLException se)
+                        {
+                            se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                        }
+                        if(flag!=1)
+                        {
+                            neworder.quality = jTextField8.getText();
+                            query = "Select Qid from Quality where type LIKE '"+neworder.quality+"';";
+                            try
+                            {
+                                stmt = conn.createStatement();
+                                rs = stmt.executeQuery(query);
+                                if(rs.next())
+                                {
+                                    neworder.quality_id = rs.getString("Qid");
+                                }
+                                else
+                                {
+                                    JOptionPane.showMessageDialog(this, "This Quality doesn't exist. Create one first");
+                                    flag = 1;
+                                }
+                                try
+                                {
+                                    if(!(rs.next())) rs.close();
+                                    stmt.close();
+                                }
+                                catch(SQLException se)
+                                {
+                                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                                }
+                            }
+                            catch(SQLException se)
+                            {
+                                se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                            }
+                            if(flag!=1)
+                            {
+                                neworder.quantity = jTextField9.getText();
+                                query = "UPDATE Orders SET customer_id = " + neworder.customer_id + ", Label = '" + neworder.Label + "', Comments = '" + neworder.Comments + "', status = '" + neworder.status + "', Packing_Type = '" + neworder.Packing_Type + "', seat_cover_id = " + neworder.seat_cover_id + ", quality_id = " + neworder.quality_id + ", quantity = " + neworder.quantity + " WHERE Orders.order_id = " + neworder.order_id + ";";
+                                try
+                                {
+                                    stmt = conn.createStatement();
+                                    stmt.execute(query);
+                                    try
+                                    {
+                                        stmt.close();
+                                        fillTable();
+                                        JOptionPane.showMessageDialog(this, "Order was successfully updated.");
+                                    }
+                                    catch(SQLException se)
+                                    {
+                                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                                    }
+                                }
+                                catch(SQLException se)
+                                {
+                                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                                }
+                            }
+                        }
+                    }
+                }
+            break;
+            case 3:
+                flag = 0;
+                newcust.customer_id = SaveID;
+                newcust.Name = jTextField1.getText();
+                newcust.Address = jTextField2.getText();
+                newcust.Mobile_Number = jTextField3.getText();
+                newcust.Company_Name = jTextField4.getText();
+                newcust.GST_NO = jTextField5.getText();
+                query = "UPDATE Customers SET Name = '" + newcust.Name + "', Address = '" + newcust.Address + "', Mobile_Number = '" + newcust.Mobile_Number + "', Company_Name = '" + newcust.Company_Name + "', GST_No = '" + newcust.GST_NO + "' WHERE customer_id = " + newcust.customer_id + ";";
+                try
+                {
+                    stmt = conn.createStatement();
+                    stmt.execute(query);
+                    try
+                    {
+                        stmt.close();
+                        fillTable();
+                        JOptionPane.showMessageDialog(this, "Customer was successfully updated.");
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+            break;
+            case 4:
+                flag = 0;
+                sc.seat_cover_id = SaveID;
+                sc.Vehicle_Model = jTextField1.getText();
+                query = "UPDATE Seat_Covers SET Vehicle_Model = '" + sc.Vehicle_Model + "' WHERE seat_cover_id = " + sc.seat_cover_id + ";";
+                try
+                {
+                    stmt = conn.createStatement();
+                    stmt.execute(query);
+                    try
+                    {
+                        stmt.close();
+                        fillTable();
+                        JOptionPane.showMessageDialog(this, "Vehicle Model was successfully upddated.");
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+            break;
+            case 6:
+                flag = 0;
+                quality.quality_id = SaveID;
+                quality.Type = jTextField1.getText();
+                query = "UPDATE Quality SET type = " + quality.Type + " WHERE Qid = " + quality.quality_id + ";";
+                try
+                {
+                    stmt = conn.createStatement();
+                    stmt.execute(query);
+                    try
+                    {
+                        stmt.close();
+                        fillTable();
+                        JOptionPane.showMessageDialog(this, "Quality was successfully updated.");
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+            break;
+            default:
+            break;
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        int flag = 0;
+        switch(activeMenuItem)
+        {
+            case 1:
+                flag = 0;
+                neworder.CustomerName = jTextField1.getText();
+                query = "Select customer_id from Customers where Name='"+neworder.CustomerName+"';";
+                try
+                {
+                    stmt = conn.createStatement();
+                    rs = stmt.executeQuery(query);
+                    if(rs.next())
+                    {
+                        neworder.customer_id = rs.getString("customer_id");
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(this, "This customer doesn't exist. Create one first");
+                        flag = 1;
+                    }
+                    try
+                    {
+                        if(!(rs.next())) rs.close();
+                        stmt.close();
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+                if(flag!=1)
+                {
+                    neworder.Label = jTextField2.getText();
+                    neworder.Comments = jTextField3.getText();
+                    neworder.date = jTextField4.getText();
+                    neworder.status = jTextField5.getText();
+                    if(neworder.checkstatus()==false)
+                    {
+                        flag=1;
+                        JOptionPane.showMessageDialog(this, "Status needs to be in pending/processed/completed/delivered");
+                    }
+                    if(flag!=1)
+                    {
+                        neworder.Packing_Type = jTextField6.getText();
+                        neworder.Vehicle_Type = jTextField7.getText();
+                        query = "Select seat_cover_id from Seat_Covers where Vehicle_model = '"+neworder.Vehicle_Type+"';";
+                        try
+                        {
+                            stmt = conn.createStatement();
+                            rs = stmt.executeQuery(query);
+                            if(rs.next())
+                            {
+                                neworder.seat_cover_id = rs.getString("Seat_cover_id");
+                            }
+                            else
+                            {
+                                JOptionPane.showMessageDialog(this, "This Vehicle Type doesn't exist. Create one first");
+                                flag = 1;
+                            }
+                            try
+                            {
+                                if(!(rs.next())) rs.close();
+                                stmt.close();
+                            }
+                            catch(SQLException se)
+                            {
+                                se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                            }
+                        }
+                        catch(SQLException se)
+                        {
+                            se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                        }
+                        if(flag!=1)
+                        {
+                            neworder.quality = jTextField8.getText();
+                            query = "Select Qid from Quality where type LIKE '"+neworder.quality+"';";
+                            try
+                            {
+                                stmt = conn.createStatement();
+                                rs = stmt.executeQuery(query);
+                                if(rs.next())
+                                {
+                                    neworder.quality_id = rs.getString("Qid");
+                                }
+                                else
+                                {
+                                    JOptionPane.showMessageDialog(this, "This Quality doesn't exist. Create one first");
+                                    flag = 1;
+                                }
+                                try
+                                {
+                                    if(!(rs.next())) rs.close();
+                                    stmt.close();
+                                }
+                                catch(SQLException se)
+                                {
+                                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                                }
+                            }
+                            catch(SQLException se)
+                            {
+                                se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                            }
+                            if(flag!=1)
+                            {
+                                neworder.quantity = jTextField9.getText();
+                                query = "INSERT INTO Orders(customer_id, Label, Comments, status, Packing_Type, seat_cover_id, quality_id, quantity) VALUES (" + neworder.customer_id + ",'" + neworder.Label + "','" + neworder.Comments + "','" + neworder.status + "','" + neworder.Packing_Type + "'," + neworder.seat_cover_id + "," + neworder.quality_id + "," + neworder.quantity + ");";
+                                try
+                                {
+                                    stmt = conn.createStatement();
+                                    stmt.execute(query);
+                                    try
+                                    {
+                                        stmt.close();
+                                        JOptionPane.showMessageDialog(this, "New order was successfully placed.");
+                                    }
+                                    catch(SQLException se)
+                                    {
+                                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                                    }
+                                }
+                                catch(SQLException se)
+                                {
+                                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                                }
+                            }
+                        }
+                    }
+                }
+            break;
+            case 2:
+                row = jTable1.getSelectedRow();
+                if(row!=-1)
+                {
+                    neworder.order_id = jTable1.getModel().getValueAt(row, 0).toString();
+                    neworder.CustomerName = jTable1.getModel().getValueAt(row, 1).toString();
+                    neworder.Label = jTable1.getModel().getValueAt(row, 2).toString();
+                    neworder.Comments = jTable1.getModel().getValueAt(row, 3).toString();
+                    neworder.date = jTable1.getModel().getValueAt(row, 4).toString();
+                    neworder.status = jTable1.getModel().getValueAt(row, 5).toString();
+                    neworder.Packing_Type = jTable1.getModel().getValueAt(row, 6).toString();
+                    neworder.Vehicle_Type = jTable1.getModel().getValueAt(row, 7).toString();
+                    neworder.quality = jTable1.getModel().getValueAt(row, 8).toString();
+                    neworder.quantity = jTable1.getModel().getValueAt(row, 9).toString();
+                    jTextField1.setText(neworder.CustomerName);
+                    jTextField2.setText(neworder.Label);
+                    jTextField3.setText(neworder.Comments);
+                    jTextField4.setText(neworder.date);
+                    jTextField5.setText(neworder.status);
+                    jTextField6.setText(neworder.Packing_Type);
+                    jTextField7.setText(neworder.Vehicle_Type);
+                    jTextField8.setText(neworder.quality);
+                    jTextField9.setText(neworder.quantity);
+                    jButton2.setVisible(true);
+                    jButton8.setVisible(true);
+                    SaveID = neworder.order_id;
+                }
+            break;
+            case 3:
+                row = jTable1.getSelectedRow();
+                if(row!=-1)
+                {
+                    newcust.customer_id = jTable1.getModel().getValueAt(row, 0).toString();
+                    newcust.Name = jTable1.getModel().getValueAt(row, 1).toString();
+                    newcust.Address = jTable1.getModel().getValueAt(row, 2).toString();
+                    newcust.Mobile_Number = jTable1.getModel().getValueAt(row, 3).toString();
+                    newcust.Company_Name = jTable1.getModel().getValueAt(row, 4).toString();
+                    newcust.GST_NO = jTable1.getModel().getValueAt(row, 5).toString();
+                    jTextField1.setText(newcust.Name);
+                    jTextField2.setText(newcust.Address);
+                    jTextField3.setText(newcust.Mobile_Number);
+                    jTextField4.setText(newcust.Company_Name);
+                    jTextField5.setText(newcust.GST_NO);
+                    jButton2.setVisible(true);
+                    jButton8.setVisible(true);
+                    SaveID = newcust.customer_id;
+                }
+            break;
+            case 4:
+                row = jTable1.getSelectedRow();
+                if(row!=-1)
+                {
+                    sc.seat_cover_id = jTable1.getModel().getValueAt(row, 0).toString();
+                    sc.Vehicle_Model = jTable1.getModel().getValueAt(row, 1).toString();
+                    jTextField1.setText(sc.Vehicle_Model);
+                    jButton2.setVisible(true);
+                    jButton8.setVisible(true);
+                    SaveID = sc.seat_cover_id;
+                }
+            break;
+            case 6:
+                row = jTable1.getSelectedRow();
+                if(row!=-1)
+                {
+                    quality.quality_id= jTable1.getModel().getValueAt(row, 0).toString();
+                    quality.Type = jTable1.getModel().getValueAt(row, 1).toString();
+                    jTextField1.setText(quality.Type);
+                    jButton2.setVisible(true);
+                    jButton8.setVisible(true);
+                    SaveID = quality.quality_id;
+                }
+            break;
+            default:
+                break;
+            
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        switch(activeMenuItem)
+        {
+            case 1:
+                jTextField1.setText("");
+                jTextField2.setText("");
+                jTextField3.setText("");
+                jTextField4.setText("");
+                jTextField5.setText("");
+                jTextField6.setText("");
+                jTextField7.setText("");
+                jTextField8.setText("");
+                jTextField9.setText("");
+                fillTable();
+                break;
+            case 2:
+                jTextField1.setText("");
+                jTextField2.setText("");
+                jTextField3.setText("");
+                jTextField4.setText("");
+                jTextField5.setText("");
+                jTextField6.setText("");
+                jTextField7.setText("");
+                jTextField8.setText("");
+                jTextField9.setText("");
+                if("Cancel Filter".equals(jButton5.getText()))
+                {
+                    jButton5.setSelected(true);
+                }
+                fillTable();
+                break;
+            case 3:
+                jTextField1.setText("");
+                jTextField2.setText("");
+                jTextField3.setText("");
+                jTextField4.setText("");
+                jTextField5.setText("");
+                jComboBox1.setSelectedIndex(0);
+                fillTable();
+                break;
+            case 4:
+                jTextField1.setText("");
+                fillTable();
+                break;
+            case 5:
+                jTextField1.setText("");
+                jTextField2.setText("");
+                jTextField3.setText("");
+                fillTable();
+                break;
+            case 6:
+                jTextField1.setText("");
+                fillTable();
+                break;
+            default:
+                break;
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jMenu7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu7ActionPerformed
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu7();
+    }//GEN-LAST:event_jMenu7ActionPerformed
+
+    private void jMenu7KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jMenu7KeyReleased
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu7();
+    }//GEN-LAST:event_jMenu7KeyReleased
+
+    private void jMenu7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu7MouseClicked
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu7();
+    }//GEN-LAST:event_jMenu7MouseClicked
+
+    private void jMenu6MenuKeyReleased(javax.swing.event.MenuKeyEvent evt) {//GEN-FIRST:event_jMenu6MenuKeyReleased
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu6();
+    }//GEN-LAST:event_jMenu6MenuKeyReleased
+
+    private void jMenu7MenuKeyReleased(javax.swing.event.MenuKeyEvent evt) {//GEN-FIRST:event_jMenu7MenuKeyReleased
+        // TODO add your handling code here:
+        setinvisible();
+        activateMenu7();        
+    }//GEN-LAST:event_jMenu7MenuKeyReleased
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        switch(activeMenuItem)
+        {
+            case 3:
+                newcust.Name = jTextField1.getText();
+                newcust.Address = jTextField2.getText();
+                newcust.Mobile_Number = jTextField3.getText();
+                newcust.Company_Name = jTextField4.getText();
+                newcust.GST_NO = jTextField5.getText();
+                query = "INSERT INTO Customers(Name, Address, Mobile_Number, Company_Name, GST_No) VALUES ( '" + newcust.Name + "', '" + newcust.Address + "', '" + newcust.Mobile_Number + "', '" + newcust.Company_Name + "','" + newcust.GST_NO + "');";
+                try
+                {
+                    stmt = conn.createStatement();
+                    stmt.execute(query);
+                    try
+                    {
+                        stmt.close();
+                        fillTable();
+                        JOptionPane.showMessageDialog(this, "New Customer was successfully addeded.");
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+            break;
+            case 4:
+                sc.Vehicle_Model = jTextField1.getText();
+                query = "INSERT INTO Seat_Covers(Vehicle_Model) VALUES( '" + sc.Vehicle_Model + "' );";
+                try
+                {
+                    stmt = conn.createStatement();
+                    stmt.execute(query);
+                    try
+                    {
+                        stmt.close();
+                        fillTable();
+                        JOptionPane.showMessageDialog(this, "New Vehicle Model was successfully added.");
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+            break;
+            case 6:
+                quality.Type = jTextField1.getText();
+                query = "INSERT INTO Quality(type) VALUES ( " + quality.Type + " );";
+                try
+                {
+                    stmt = conn.createStatement();
+                    stmt.execute(query);
+                    try
+                    {
+                        stmt.close();
+                        fillTable();
+                        JOptionPane.showMessageDialog(this, "New Quality was successfully addeded.");
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+            break;
+            default:
+            break;
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        // TODO add your handling code here:
+        int flag=0;
+        switch(activeMenuItem)
+        {
+            case 2:
+                flag = 0;
+                neworder.order_id = SaveID;
+                query = "DELETE from Orders WHERE order_id = " + neworder.order_id + ";";
+                try
+                {
+                    stmt = conn.createStatement();
+                    stmt.execute(query);
+                    try
+                    {
+                        stmt.close();
+                        fillTable();
+                        JOptionPane.showMessageDialog(this, "Order was successfully deleted.");
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+            break;
+            case 3:
+                flag = 0;
+                newcust.customer_id = SaveID;
+                query = "DELETE from Customers WHERE customer_id = " + newcust.customer_id + ";";
+                try
+                {
+                    stmt = conn.createStatement();
+                    stmt.execute(query);
+                    try
+                    {
+                        stmt.close();
+                        fillTable();
+                        JOptionPane.showMessageDialog(this, "Customer was successfully deleted.");
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+            break;
+            case 4:
+                flag = 0;
+                sc.seat_cover_id = SaveID;
+                query = "DELETE from Seat_Covers WHERE seat_cover_id = " + sc.seat_cover_id + ";";
+                try
+                {
+                    stmt = conn.createStatement();
+                    stmt.execute(query);
+                    try
+                    {
+                        stmt.close();
+                        fillTable();
+                        JOptionPane.showMessageDialog(this, "Vehicle Model was successfully Deleted.");
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+            break;
+            case 6:
+                flag = 0;
+                quality.quality_id = SaveID;
+                query = "DELETE from Quality WHERE Qid = " + quality.quality_id + ";";
+                try
+                {
+                    stmt = conn.createStatement();
+                    stmt.execute(query);
+                    try
+                    {
+                        stmt.close();
+                        fillTable();
+                        JOptionPane.showMessageDialog(this, "Quality was successfully deleted.");
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+            break;
+            default:
+            break;
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = new DefaultTableModel();
+        String Name = jTextField11.getText();
+        switch(jComboBox1.getSelectedIndex())
+        {
+            case 0:
+                query = "Select customer_id, Name, Address, Mobile_Number, Company_Name, GST_No from Customers;";
+            break;
+            case 1:
+                query = "Select customer_id, Name, Address, Mobile_Number, Company_Name, GST_No from Customers WHERE Name LIKE '%" + Name + "%' ;";
+            break;
+            case 2:
+                query = "Select customer_id, Name, Address, Mobile_Number, Company_Name, GST_No from Customers WHERE Address LIKE '%" + Name + "%' ;";
+            break;
+            case 3:
+                query = "Select customer_id, Name, Address, Mobile_Number, Company_Name, GST_No from Customers WHERE Mobile_Number LIKE '%" + Name + "%' ;";
+            break;
+            case 4:
+                query = "Select customer_id, Name, Address, Mobile_Number, Company_Name, GST_No from Customers WHERE Company_Name LIKE '%" + Name + "%' ;";
+            break;
+            case 5:
+                query = "Select customer_id, Name, Address, Mobile_Number, Company_Name, GST_No from Customers WHERE GST_No LIKE '%" + Name + "%' ;";
+                break;
+            default:
+                break;
+        }
+        model.addColumn("Customer ID");
+        model.addColumn("Customer Name");
+        model.addColumn("Address");
+        model.addColumn("Mobile Number");
+        model.addColumn("Company Name");
+        model.addColumn("GST No.");
+        try
+        {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(query);
+            while(rs.next())
+            {
+                Customers cust = new Customers();
+                cust.customer_id = rs.getString("customer_id");
+                cust.Name = rs.getString("Name");
+                cust.Address = rs.getString("Address");
+                cust.Mobile_Number = rs.getString("Mobile_Number");
+                cust.Company_Name = rs.getString("Company_Name");
+                cust.GST_NO = rs.getString("GST_No");
+                model.addRow(new Object[] {cust.customer_id, cust.Name, cust.Address, cust.Mobile_Number, cust.Company_Name, cust.GST_NO});
+            }
+            try
+            {
+                if(!(rs.next())) rs.close();
+                stmt.close();
+            }
+            catch(SQLException se)
+            {
+                se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+            }
+        }
+        catch(SQLException se)
+        {
+            se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+        }
+        jTable1.setModel(model);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jComboBox1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jComboBox1KeyReleased
+        // TODO add your handling code here:
+        activejComboBox1();
+    }//GEN-LAST:event_jComboBox1KeyReleased
+
+    private void jComboBox1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox1MouseClicked
+        // TODO add your handling code here:
+        activejComboBox1();
+    }//GEN-LAST:event_jComboBox1MouseClicked
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = new DefaultTableModel();
+        model.addColumn("Order ID");
+        model.addColumn("Customer Name");
+        model.addColumn("Label");
+        model.addColumn("Comments");
+        model.addColumn("Date");
+        model.addColumn("Status");
+        model.addColumn("Packing Type");
+        model.addColumn("Vehicle Type");
+        model.addColumn("Quality");
+        model.addColumn("Quantity");
+        neworder.quality = "";
+        neworder.Comments = "";
+        neworder.Packing_Type = "";
+        neworder.CustomerName = "";
+        if(jCheckBox1.isSelected())
+        {
+            neworder.quality = jTextField12.getText();
+        }
+        if(jCheckBox2.isSelected())
+        {
+            neworder.Comments = jTextField13.getText();
+        }
+        if(jCheckBox3.isSelected())
+        {
+            neworder.Packing_Type = jTextField14.getText();
+        }
+        if(jCheckBox4.isSelected())
+        {
+            neworder.CustomerName = jTextField15.getText();
+        }
+        query = "Select Orders.order_id, Orders.customer_id, Orders.seat_cover_id, Orders.quality_id, Orders.quantity, Orders.Packing_Type, Orders.Label, Orders.Comments, Orders.Date, Orders.status, Customers.Name, Seat_Covers.Vehicle_model, Quality.type from Orders, Customers, Seat_Covers, Quality where Orders.customer_id = Customers.customer_id AND Orders.seat_cover_id = Seat_Covers.seat_cover_id AND Orders.quality_id = Quality.Qid; AND Quality.type LIKE '%" + neworder.quality + "%' AND Orders.Comments LIKE '%" + neworder.Comments + "%' AND Orders.Packing_Type LIKE '%" + neworder.Packing_Type + "%' AND Customers.Name LIKE '%" + neworder.CustomerName + "%'";
+        int flag = 0;
+        if( jCheckBox5.isSelected() || jCheckBox6.isSelected() || jCheckBox7.isSelected() || jCheckBox8.isSelected())
+        {
+            query = query+" AND Orders.status IN (";
+            if(jCheckBox5.isSelected())
+            {
+                query = query+"'pending'";
+                flag = 1;
+            }
+            if(flag==1)
+                query = query+",";
+            if(jCheckBox6.isSelected())
+            {
+                query = query+"'processed'";
+                flag = 1;
+            }
+            if(flag==1)
+                query = query+",";
+            
+            if(jCheckBox7.isSelected())
+            {
+                query = query+"'completed'";
+                flag = 1;
+            }
+            if(flag==1)
+                query = query+",";
+            if(jCheckBox8.isSelected())
+            {
+                query = query+"'delivered'";
+                query = query+')';
+            }
+        }
+        query = query+";";
+        try
+        {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(query);
+            while(rs.next())
+            {
+                Orders order = new Orders();
+                order.order_id = rs.getString("Orders.order_id");
+                order.customer_id = rs.getString("Orders.customer_id");
+                order.seat_cover_id = rs.getString("Orders.seat_cover_id");
+                order.quality_id = rs.getString("Orders.quality_id");
+                order.quantity = rs.getString("Orders.quantity");
+                order.Packing_Type = rs.getString("Orders.Packing_Type");
+                order.Label = rs.getString("Orders.Label");
+                order.Comments = rs.getString("Orders.Comments");
+                order.date = rs.getString("Orders.Date");
+                order.status = rs.getString("Orders.status");
+                order.CustomerName = rs.getString("Customers.Name");
+                order.Vehicle_Type = rs.getString("Seat_Covers.Vehicle_model");
+                order.quality = rs.getString("Quality.type");
+                model.addRow(new Object[] {order.order_id, order.CustomerName, order.Label, order.Comments, order.date, order.status, order.Packing_Type, order.Vehicle_Type, order.quality, order.quantity});
+            }
+            try
+            {
+                if(!(rs.next())) rs.close();
+                stmt.close();
+            }
+            catch(SQLException se)
+            {
+                se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+            }
+        }
+        catch(SQLException se)
+        {
+            se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+        }
+        jTable1.setModel(model);
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        // TODO add your handling code here:
+        if(jCheckBox1.isSelected()==true)
+        {
+            jTextField12.setText("");
+            jTextField12.setVisible(true);
+        }
+        else
+        {
+            jTextField12.setVisible(false);
+        }
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
+        // TODO add your handling code here:
+        if(jCheckBox2.isSelected()==true)
+        {
+            jTextField13.setText("");
+            jTextField13.setVisible(true);
+        }
+        else
+        {
+            jTextField13.setVisible(false);
+        }
+    }//GEN-LAST:event_jCheckBox2ActionPerformed
+
+    private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox3ActionPerformed
+        // TODO add your handling code here:
+        if(jCheckBox3.isSelected()==true)
+        {
+            jTextField14.setText("");
+            jTextField14.setVisible(true);
+        }
+        else
+        {
+            jTextField14.setVisible(false);
+        }
+    }//GEN-LAST:event_jCheckBox3ActionPerformed
+
+    private void jCheckBox4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox4ActionPerformed
+        // TODO add your handling code here:
+        if(jCheckBox4.isSelected()==true)
+        {
+            jTextField15.setText("");
+            jTextField15.setVisible(true);
+        }
+        else
+        {
+            jTextField15.setVisible(false);
+        }
+    }//GEN-LAST:event_jCheckBox4ActionPerformed
+
+
+    private void activateComboBox1Index1()
     {
-        
+        jLabel12.setVisible(true);
+        jLabel12.setText("Enter name");
+        jTextField11.setVisible(true);
+        jTextField11.setText("");
+        jButton3.setVisible(true);
+    }
+    private void activateComboBox1Index2()
+    {
+        jLabel12.setVisible(true);
+        jLabel12.setText("Enter address");
+        jTextField11.setVisible(true);
+        jTextField11.setText("");
+        jButton3.setVisible(true);
+    }
+    private void activateComboBox1Index3()
+    {
+        jLabel12.setVisible(true);
+        jLabel12.setText("Enter mobile number");
+        jTextField11.setVisible(true);
+        jTextField11.setText("");
+        jButton3.setVisible(true);
+    }
+    private void activateComboBox1Index4()
+    {
+        jLabel12.setVisible(true);
+        jLabel12.setText("Enter company name");
+        jTextField11.setVisible(true);
+        jTextField11.setText("");
+        jButton3.setVisible(true);
+    }
+    private void activateComboBox1Index5()
+    {
+        jLabel12.setVisible(true);
+        jLabel12.setText("Enter GSTIN No.");
+        jTextField11.setVisible(true);
+        jTextField11.setText("");
+        jButton3.setVisible(true);
+    }
+    private void activateMenu1()
+    {
+        activeMenuItem = 1;
+        jLabel1.setText("Customer Name");
+        jLabel2.setText("Label");
+        jLabel3.setText("Comments");
+        jLabel4.setText("Date");
+        jLabel5.setText("Status");
+        jLabel6.setText("Packing Type");
+        jLabel7.setText("Vehicle Type");
+        jLabel8.setText("Quality");
+        jLabel9.setText("Quantity");
+        jLabel11.setText("Enter the order details");
+        jTextField1.setText("");
+        jTextField2.setText("");
+        jTextField3.setText("");
+        jTextField4.setText("");
+        jTextField5.setText("");
+        jTextField6.setText("");
+        jTextField7.setText("");
+        jTextField8.setText("");
+        jTextField9.setText("");
+        jButton1.setText("Place Order");
+        jButton7.setText("Reset All");
+        jTextField4.setText(sdf.format(new Date()));
+        jLabel1.setVisible(true);
+        jLabel2.setVisible(true);
+        jLabel3.setVisible(true);
+        jLabel4.setVisible(true);
+        jLabel5.setVisible(true);
+        jLabel6.setVisible(true);
+        jLabel7.setVisible(true);
+        jLabel8.setVisible(true);
+        jLabel9.setVisible(true);
+        jLabel11.setVisible(true);
+        jLabel12.setVisible(false);
+        jTextField1.setVisible(true);
+        jTextField2.setVisible(true);
+        jTextField3.setVisible(true);
+        jTextField4.setVisible(true);
+        jTextField5.setVisible(true);
+        jTextField6.setVisible(true);
+        jTextField7.setVisible(true);
+        jTextField8.setVisible(true);
+        jTextField9.setVisible(true);
+        jButton1.setVisible(true);
+        jButton7.setVisible(true);
+    }
+    private void activateMenu2()
+    {
+        activeMenuItem = 2;
+        jLabel1.setText("Customer Name");
+        jLabel2.setText("Label");
+        jLabel3.setText("Comments");
+        jLabel4.setText("Date");
+        jLabel5.setText("Status");
+        jLabel6.setText("Packing Type");
+        jLabel7.setText("Vehicle Type");
+        jLabel8.setText("Quality");
+        jLabel9.setText("Quantity");
+        jTextField1.setText("");
+        jTextField2.setText("");
+        jTextField3.setText("");
+        jTextField4.setText("");
+        jTextField5.setText("");
+        jTextField6.setText("");
+        jTextField7.setText("");
+        jTextField8.setText("");
+        jTextField9.setText("");
+        jButton1.setText("Edit");
+        jButton2.setText("Save");
+        jButton5.setText("Add Filters");
+        jButton7.setText("Clear All");
+        jButton8.setText("Delete Selected Order");
+        fillTable();
+        jLabel1.setVisible(true);
+        jLabel2.setVisible(true);
+        jLabel3.setVisible(true);
+        jLabel4.setVisible(true);
+        jLabel5.setVisible(true);
+        jLabel6.setVisible(true);
+        jLabel7.setVisible(true);
+        jLabel8.setVisible(true);
+        jLabel9.setVisible(true);
+        jTextField1.setVisible(true);
+        jTextField2.setVisible(true);
+        jTextField3.setVisible(true);
+        jTextField4.setVisible(true);
+        jTextField5.setVisible(true);
+        jTextField6.setVisible(true);
+        jTextField7.setVisible(true);
+        jTextField8.setVisible(true);
+        jTextField9.setVisible(true);
+        jButton1.setVisible(true);
+        jButton7.setVisible(true);
+        jButton5.setVisible(true);
+        jTable1.setVisible(true);
+    }
+    private void activateMenu3()
+    {
+        activeMenuItem = 3;
+        jLabel1.setText("Customer Name");
+        jLabel2.setText("Address");
+        jLabel3.setText("Mobile Number");
+        jLabel4.setText("Company Name");
+        jLabel5.setText("GST No.");
+        jLabel11.setText("Search By");
+        jLabel12.setText("Enter Search Keyword:");
+        jTextField1.setText("");
+        jTextField2.setText("");
+        jTextField3.setText("");
+        jTextField4.setText("");
+        jTextField5.setText("");
+        jButton1.setText("Edit");
+        jButton2.setText("Save");
+        jButton3.setText("Search");
+        jButton4.setText("Add as new customer");
+        jButton7.setText("Clear All");
+        jButton8.setText("Delete Customer");
+        fillTable();
+        jTable1.setVisible(true);
+        jLabel1.setVisible(true);
+        jLabel2.setVisible(true);
+        jLabel3.setVisible(true);
+        jLabel4.setVisible(true);
+        jLabel5.setVisible(true);
+        jLabel11.setVisible(true);
+        jLabel12.setVisible(true);
+        jTextField1.setVisible(true);
+        jTextField2.setVisible(true);
+        jTextField3.setVisible(true);
+        jTextField4.setVisible(true);
+        jTextField5.setVisible(true);
+        jTextField11.setVisible(true);
+        jButton1.setVisible(true);
+        jButton3.setVisible(true);
+        jButton4.setVisible(true);
+        jButton7.setVisible(true);
+        jComboBox1.setVisible(true);
     }
     
-    private void activateMenu4(Boolean b)
+    private void activateMenu4()
     {
-        
+        activeMenuItem = 4;
+        jLabel1.setText("Vehicle Model");
+        jTextField1.setText("");
+        jButton1.setText("Edit");
+        jButton2.setText("Save");
+        jButton4.setText("Add as new item");
+        jButton7.setText("Clear All");
+        jButton8.setText("Delete selected Item");
+        fillTable();
+        jTable1.setVisible(true);
+        jLabel1.setVisible(true);
+        jTextField1.setVisible(true);
+        jButton1.setVisible(true);
+        jButton4.setVisible(true);
+        jButton7.setVisible(true);
     }
     
-    private void activateMenu5(Boolean b)
+    private void activateMenu5()
     {
-        
+        activeMenuItem = 5;
+        fillTable();
+        jTable1.setVisible(true);
     }
     
-    private void activateMenu6(Boolean b)
+    private void activateMenu6()
     {
-        if (b==true)
-            System.exit(0);
+        activeMenuItem = 6;
+        jLabel1.setText("Quality(mm)");
+        jTextField1.setText("");
+        jButton1.setText("Edit");
+        jButton2.setText("Save");
+        jButton4.setText("Add as new item");
+        jButton7.setText("Clear All");
+        jButton8.setText("Delete selected Item");
+        fillTable();
+        jTable1.setVisible(true);
+        jLabel1.setVisible(true);
+        jTextField1.setVisible(true);
+        jButton1.setVisible(true);
+        jButton4.setVisible(true);
+        jButton7.setVisible(true);
     }
+    private void activateMenu7()
+    {
+        activeMenuItem = 7;
+        try
+        {
+            if(stmt!=null)
+                stmt.close();
+            conn.close();
+        }
+        catch(SQLException ex)
+        {
+            ex.printStackTrace();
+        }
+        System.exit(0);
+    }
+    
+    public void fillTable()
+    {
+        DefaultTableModel model = new DefaultTableModel();
+        switch(activeMenuItem)
+        {
+            case 2:
+                model.addColumn("Order ID");
+                model.addColumn("Customer Name");
+                model.addColumn("Label");
+                model.addColumn("Comments");
+                model.addColumn("Date");
+                model.addColumn("Status");
+                model.addColumn("Packing Type");
+                model.addColumn("Vehicle Type");
+                model.addColumn("Quality");
+                model.addColumn("Quantity");
+                //query = "Select Orders.order_id, Orders.customer_id, Orders.seat_cover_id, Orders.quality_id, Orders.quantity, Orders.Packing_Type, Orders.Label, Orders.Comments, Orders.Date, Orders.status, Customers.Name, Seat_Covers.Vehicle_model, Quality.type from Orders, Customers, Seat_Covers, Quality where Orders.customer_id = Customers.customer_id AND Orders.seat_cover_id = Seat_Covers.seat_cover_id AND Orders.quality_id = Quality.Qid;";
+                query = "Select Orders.order_id, Orders.customer_id, Orders.seat_cover_id, Orders.quality_id, Orders.quantity, Orders.Packing_Type, Orders.Label, Orders.Comments, Orders.Date, Orders.status, Customers.Name, Seat_Covers.Vehicle_model, Quality.type FROM Quality,Customers JOIN Orders ON Customers.customer_id = Orders.customer_id JOIN Seat_Covers ON Orders.seat_cover_id = Seat_Covers.seat_cover_id WHERE Orders.quality_id = Quality.Qid;";
+                try
+                {
+                    stmt = conn.createStatement();
+                    rs = stmt.executeQuery(query);
+                    while(rs.next())
+                    {
+                        Orders order = new Orders();
+                        order.order_id = rs.getString("Orders.order_id");
+                        order.customer_id = rs.getString("Orders.customer_id");
+                        order.seat_cover_id = rs.getString("Orders.seat_cover_id");
+                        order.quality_id = rs.getString("Orders.quality_id");
+                        order.quantity = rs.getString("Orders.quantity");
+                        order.Packing_Type = rs.getString("Orders.Packing_Type");
+                        order.Label = rs.getString("Orders.Label");
+                        order.Comments = rs.getString("Orders.Comments");
+                        order.date = rs.getString("Orders.Date");
+                        order.status = rs.getString("Orders.status");
+                        order.CustomerName = rs.getString("Customers.Name");
+                        order.Vehicle_Type = rs.getString("Seat_Covers.Vehicle_model");
+                        order.quality = rs.getString("Quality.type");
+                        model.addRow(new Object[] {order.order_id, order.CustomerName, order.Label, order.Comments, order.date, order.status, order.Packing_Type, order.Vehicle_Type, order.quality, order.quantity});
+                    }
+                    try
+                    {
+                        if(!(rs.next())) rs.close();
+                        stmt.close();
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+                jTable1.setModel(model);
+            break;
+            case 3:
+                model.addColumn("Customer ID");
+                model.addColumn("Customer Name");
+                model.addColumn("Address");
+                model.addColumn("Mobile Number");
+                model.addColumn("Company Name");
+                model.addColumn("GST No.");
+                query = "Select customer_id, Name, Address, Mobile_Number, Company_Name, GST_No from Customers;";
+                try
+                {
+                    stmt = conn.createStatement();
+                    rs = stmt.executeQuery(query);
+                    while(rs.next())
+                    {
+                        Customers cust = new Customers();
+                        cust.customer_id = rs.getString("customer_id");
+                        cust.Name = rs.getString("Name");
+                        cust.Address = rs.getString("Address");
+                        cust.Mobile_Number = rs.getString("Mobile_Number");
+                        cust.Company_Name = rs.getString("Company_Name");
+                        cust.GST_NO = rs.getString("GST_No");
+                        model.addRow(new Object[] {cust.customer_id, cust.Name, cust.Address, cust.Mobile_Number, cust.Company_Name, cust.GST_NO});
+                    }
+                    try
+                    {
+                        if(!(rs.next())) rs.close();
+                        stmt.close();
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+                jTable1.setModel(model);
+            break;
+            case 4:
+                model.addColumn("Seat Cover ID");
+                model.addColumn("Vehicle Type");
+                query = "Select seat_cover_id, Vehicle_Model from Seat_Covers;";
+                try
+                {
+                    stmt = conn.createStatement();
+                    rs = stmt.executeQuery(query);
+                    while(rs.next())
+                    {
+                        Seat_Covers newsc = new Seat_Covers();
+                        newsc.seat_cover_id = rs.getString("seat_cover_id");
+                        newsc.Vehicle_Model = rs.getString("Vehicle_model");
+                        model.addRow(new Object[] {newsc.seat_cover_id, newsc.Vehicle_Model});
+                    }
+                    try
+                    {
+                        if(!(rs.next())) rs.close();
+                        stmt.close();
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+                jTable1.setModel(model);
+            break;
+            case 5:
+                model.addColumn("Seat Cover ID");
+                model.addColumn("Vehicle Type");
+                model.addColumn("Quantity");
+                model.addColumn("Quality(mm)");
+                query = "Select Inventory.seat_cover_id, Seat_Covers.Vehicle_Model, Inventory.quantity, Inventory.quality_id, Quality.type from Seat_Covers JOIN Inventory ON Seat_Covers.seat_cover_id = Inventory.seat_cover_id JOIN Quality ON Inventory.quality_id = Quality.Qid;";
+                try
+                {
+                    stmt = conn.createStatement();
+                    rs = stmt.executeQuery(query);
+                    while(rs.next())
+                    {
+                        Inventory i = new Inventory();
+                        i.seat_cover_id = rs.getString("Inventory.seat_cover_id");
+                        i.Vehicle_Type = rs.getString("Seat_Covers.Vehicle_model");
+                        i.quantity = rs.getString("Inventory.quantity");
+                        i.quality_id = rs.getString("Inventory.quality_id");
+                        i.quality = rs.getString("Quality.type");
+                        model.addRow(new Object[] {i.seat_cover_id, i.Vehicle_Type, i.quantity,  i.quality});
+                    }
+                    try
+                    {
+                        if(!(rs.next())) rs.close();
+                        stmt.close();
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+                jTable1.setModel(model);
+            break;
+            case 6:
+                model.addColumn("Quality ID");
+                model.addColumn("Quality");
+                query = "Select Qid, type from Quality;";
+                try
+                {
+                    stmt = conn.createStatement();
+                    rs = stmt.executeQuery(query);
+                    while(rs.next())
+                    {
+                        Quality q = new Quality();
+                        q.quality_id = rs.getString("Qid");
+                        q.Type = rs.getString("type");
+                        model.addRow(new Object[] {q.quality_id, q.Type});
+                    }
+                    try
+                    {
+                        if(!(rs.next())) rs.close();
+                        stmt.close();
+                    }
+                    catch(SQLException se)
+                    {
+                        se.printStackTrace();
+                        JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                    }
+                }
+                catch(SQLException se)
+                {
+                    se.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+                }
+                jTable1.setModel(model);
+            break;
+            default:
+            break;
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -669,9 +2511,26 @@ public class Main extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBox2;
+    private javax.swing.JCheckBox jCheckBox3;
+    private javax.swing.JCheckBox jCheckBox4;
+    private javax.swing.JCheckBox jCheckBox5;
+    private javax.swing.JCheckBox jCheckBox6;
+    private javax.swing.JCheckBox jCheckBox7;
+    private javax.swing.JCheckBox jCheckBox8;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -686,9 +2545,16 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
+    private javax.swing.JMenu jMenu7;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField10;
+    private javax.swing.JTextField jTextField11;
+    private javax.swing.JTextField jTextField12;
+    private javax.swing.JTextField jTextField13;
+    private javax.swing.JTextField jTextField14;
+    private javax.swing.JTextField jTextField15;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;

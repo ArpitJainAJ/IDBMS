@@ -10,20 +10,20 @@ package Company1;
  * @author arpit
  */
 public class Customers {
-    int customer_id;
+    String customer_id;
     String Name;
     String Address;
     String Mobile_Number;
     String Company_Name;
     String GST_NO;
     
-    public Customers(int cid, String name, String address, String mobile_no, String company_name, String gst_no)
+    public Customers()
     {
-        this.customer_id = cid;
-        this.Name = name;
-        this.Address = address;
-        this.Mobile_Number = mobile_no;
-        this.Company_Name = company_name;
-        this.GST_NO = gst_no;
+        customer_id = new String();
+        Name = new String();
+        Address = new String();
+        Mobile_Number = new String();
+        Company_Name = new String();
+        GST_NO = new String();
     }
 }

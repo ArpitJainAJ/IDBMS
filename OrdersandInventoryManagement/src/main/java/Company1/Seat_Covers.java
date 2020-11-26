@@ -10,12 +10,12 @@ package Company1;
  * @author arpit
  */
 public class Seat_Covers {
-    int seat_cover_id;
+    String seat_cover_id;
     String Vehicle_Model;
     
-    public Seat_Covers(int seat_cover_id, String Vehicle_Model)
+    public Seat_Covers()
     {
-        this.seat_cover_id = seat_cover_id;
-        this.Vehicle_Model = Vehicle_Model;
+        seat_cover_id = new String();
+        Vehicle_Model = new String();
     }
 }

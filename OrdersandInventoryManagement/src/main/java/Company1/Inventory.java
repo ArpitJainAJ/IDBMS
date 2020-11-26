@@ -10,14 +10,17 @@ package Company1;
  * @author arpit
  */
 public class Inventory {
-    int seat_cover_id;
-    int quantity;
-    int quanlity_id;
-    
-    public Inventory(int seat_cover_id, int quantity, int quality_id)
+    String seat_cover_id;
+    String quantity;
+    String quality_id;
+    String Vehicle_Type;
+    String quality;
+    public Inventory()
     {
-        this.seat_cover_id = seat_cover_id;
-        this.quantity = quantity;
-        this.quanlity_id = quality_id;
+        quality = new String();
+        Vehicle_Type = new String();
+        seat_cover_id = new String();
+        quantity = new String();
+        quality_id = new String();
     }
 }

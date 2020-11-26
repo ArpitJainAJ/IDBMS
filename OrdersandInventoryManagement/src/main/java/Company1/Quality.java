@@ -10,17 +10,12 @@ package Company1;
  * @author arpit
  */
 public class Quality {
-    int quality_id;
-    float Type;
+    String quality_id;
+    String Type;
     
-    void Quality(int quality_id, float value)
+    void Quality ()
     {
-        this.quality_id = quality_id;
-        this.Type = value;
-    }
-    void Quality (Quality q)
-    {
-        this.quality_id = q.quality_id;
-        this.Type = q.Type;
+        quality_id = new String();
+        Type = new String();
     }
 }
