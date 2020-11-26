@@ -118,7 +118,7 @@ public class Main extends javax.swing.JFrame {
         jMenu7 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1080, 768));
+        setPreferredSize(new java.awt.Dimension(1800, 900));
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Order ID");
@@ -285,6 +285,7 @@ public class Main extends javax.swing.JFrame {
         });
 
         jCheckBox1.setText("jCheckBox1");
+        jCheckBox1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox1ActionPerformed(evt);
@@ -292,6 +293,7 @@ public class Main extends javax.swing.JFrame {
         });
 
         jCheckBox2.setText("jCheckBox2");
+        jCheckBox2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox2ActionPerformed(evt);
@@ -299,6 +301,7 @@ public class Main extends javax.swing.JFrame {
         });
 
         jCheckBox3.setText("jCheckBox3");
+        jCheckBox3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox3ActionPerformed(evt);
@@ -306,6 +309,7 @@ public class Main extends javax.swing.JFrame {
         });
 
         jCheckBox4.setText("jCheckBox4");
+        jCheckBox4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jCheckBox4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox4ActionPerformed(evt);
@@ -313,26 +317,35 @@ public class Main extends javax.swing.JFrame {
         });
 
         jCheckBox5.setText("jCheckBox5");
+        jCheckBox5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 
         jCheckBox6.setText("jCheckBox6");
+        jCheckBox6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 
         jCheckBox7.setText("jCheckBox7");
+        jCheckBox7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 
         jCheckBox8.setText("jCheckBox8");
+        jCheckBox8.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 
         jButton6.setText("jButton6");
+        jButton6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton6ActionPerformed(evt);
             }
         });
 
+        jTextField12.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         jTextField12.setText("jTextField12");
 
+        jTextField13.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         jTextField13.setText("jTextField13");
 
+        jTextField14.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         jTextField14.setText("jTextField14");
 
+        jTextField15.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
         jTextField15.setText("jTextField15");
 
         jButton7.setText("jButton7");
@@ -621,11 +634,11 @@ public class Main extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(66, 66, 66)
                         .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jCheckBox3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
                         .addComponent(jTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jCheckBox4)
@@ -1890,54 +1903,56 @@ public class Main extends javax.swing.JFrame {
         neworder.Comments = "";
         neworder.Packing_Type = "";
         neworder.CustomerName = "";
+        
+        query = "Select Orders.order_id, Orders.customer_id, Orders.seat_cover_id, Orders.quality_id, Orders.quantity, Orders.Packing_Type, Orders.Label, Orders.Comments, Orders.Date, Orders.status, Customers.Name, Seat_Covers.Vehicle_model, Quality.type FROM Quality,Customers JOIN Orders ON Customers.customer_id = Orders.customer_id JOIN Seat_Covers  \n ON Orders.seat_cover_id = Seat_Covers.seat_cover_id\n WHERE Orders.quality_id = Quality.Qid";
         if(jCheckBox1.isSelected())
         {
             neworder.quality = jTextField12.getText();
+            query = query + " AND Quality.type LIKE " + neworder.quality;
         }
         if(jCheckBox2.isSelected())
         {
             neworder.Comments = jTextField13.getText();
+            query = query + " AND Orders.Comments LIKE '%" + neworder.Comments + "%' ";
         }
         if(jCheckBox3.isSelected())
         {
             neworder.Packing_Type = jTextField14.getText();
+            query = query + " AND Orders.Packing_Type LIKE '%" + neworder.Packing_Type + "%' ";
         }
         if(jCheckBox4.isSelected())
         {
             neworder.CustomerName = jTextField15.getText();
-        }
-        query = "Select Orders.order_id, Orders.customer_id, Orders.seat_cover_id, Orders.quality_id, Orders.quantity, Orders.Packing_Type, Orders.Label, Orders.Comments, Orders.Date, Orders.status, Customers.Name, Seat_Covers.Vehicle_model, Quality.type from Orders, Customers, Seat_Covers, Quality where Orders.customer_id = Customers.customer_id AND Orders.seat_cover_id = Seat_Covers.seat_cover_id AND Orders.quality_id = Quality.Qid; AND Quality.type LIKE '%" + neworder.quality + "%' AND Orders.Comments LIKE '%" + neworder.Comments + "%' AND Orders.Packing_Type LIKE '%" + neworder.Packing_Type + "%' AND Customers.Name LIKE '%" + neworder.CustomerName + "%'";
-        int flag = 0;
+            query = query + " AND Customers.Name LIKE '%" + neworder.CustomerName + "%' ";
+        }             
         if( jCheckBox5.isSelected() || jCheckBox6.isSelected() || jCheckBox7.isSelected() || jCheckBox8.isSelected())
         {
+            int flag = 0;
             query = query+" AND Orders.status IN (";
             if(jCheckBox5.isSelected())
             {
                 query = query+"'pending'";
                 flag = 1;
             }
-            if(flag==1)
-                query = query+",";
             if(jCheckBox6.isSelected())
             {
+                if(flag==1)
+                    query = query+",";
                 query = query+"'processed'";
-                flag = 1;
             }
-            if(flag==1)
-                query = query+",";
-            
             if(jCheckBox7.isSelected())
             {
+                if(flag==1)
+                    query = query+",";
                 query = query+"'completed'";
-                flag = 1;
             }
-            if(flag==1)
-                query = query+",";
             if(jCheckBox8.isSelected())
             {
+                if(flag==1)
+                    query = query+",";
                 query = query+"'delivered'";
-                query = query+')';
             }
+            query = query+')';
         }
         query = query+";";
         try
@@ -1974,7 +1989,7 @@ public class Main extends javax.swing.JFrame {
         }
         catch(SQLException se)
         {
-            se.printStackTrace(); JOptionPane.showMessageDialog(this, "Found some errors in executing operation.");
+            se.printStackTrace(); JOptionPane.showMessageDialog(this, query+"Found some errors in executing operation.");
         }
         jTable1.setModel(model);
     }//GEN-LAST:event_jButton6ActionPerformed
@@ -2289,7 +2304,6 @@ public class Main extends javax.swing.JFrame {
                 model.addColumn("Vehicle Type");
                 model.addColumn("Quality");
                 model.addColumn("Quantity");
-                //query = "Select Orders.order_id, Orders.customer_id, Orders.seat_cover_id, Orders.quality_id, Orders.quantity, Orders.Packing_Type, Orders.Label, Orders.Comments, Orders.Date, Orders.status, Customers.Name, Seat_Covers.Vehicle_model, Quality.type from Orders, Customers, Seat_Covers, Quality where Orders.customer_id = Customers.customer_id AND Orders.seat_cover_id = Seat_Covers.seat_cover_id AND Orders.quality_id = Quality.Qid;";
                 query = "Select Orders.order_id, Orders.customer_id, Orders.seat_cover_id, Orders.quality_id, Orders.quantity, Orders.Packing_Type, Orders.Label, Orders.Comments, Orders.Date, Orders.status, Customers.Name, Seat_Covers.Vehicle_model, Quality.type FROM Quality,Customers JOIN Orders ON Customers.customer_id = Orders.customer_id JOIN Seat_Covers ON Orders.seat_cover_id = Seat_Covers.seat_cover_id WHERE Orders.quality_id = Quality.Qid;";
                 try
                 {
