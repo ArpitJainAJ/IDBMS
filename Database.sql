@@ -146,3 +146,32 @@ WHERE Orders.status = 'delivered';
   
   delimiter ;
   
+  
+  
+  
+  
+  /*fillTable Case 5*/
+CREATE VIEW inventory_details AS
+SELECT Inventory.seat_cover_id, Seat_Covers.Vehicle_Model, Inventory.quantity, Inventory.quality_id, type 
+FROM Seat_Covers JOIN Inventory
+ON Seat_Covers.seat_cover_id = Inventory.seat_cover_id
+JOIN Quality
+ON Inventory.quality_id = Quality.Qid;
+  
+  /*fillTable Case 6*/
+CREATE VIEW quality_table AS
+SELECT * FROM Quality;
+  
+  /*fillTable Case 4*/
+CREATE VIEW seat_cover_table AS
+SELECT * FROM Seat_Covers;
+
+/*fillTable Case 2*/
+CREATE VIEW order_details AS
+SELECT Orders.order_id, Customers.customer_id, Customers.Name, Seat_Covers.seat_cover_id, Orders.quality_id, Orders.quantity, Orders.Packing_Type, Orders.Label, Orders.Comments, Orders.Date, Orders.status, Seat_Covers.Vehicle_Model, Quality.type 
+FROM Quality,Customers JOIN Orders
+ON Customers.customer_id = Orders.customer_id 
+JOIN Seat_Covers  
+ON Orders.seat_cover_id = Seat_Covers.seat_cover_id
+WHERE Orders.quality_id = Quality.Qid;
+  
