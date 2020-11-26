@@ -3,7 +3,6 @@ INSERT INTO Customers(Name, Address, Mobile_Number, Company_Name, GST_No) VALUES
 INSERT INTO Customers(Name, Address, Mobile_Number, Company_Name, GST_No) VALUES ('Customer3','Address3','MobileNumber3','Company3','GSTNo3');
 INSERT INTO Customers(Name, Address, Mobile_Number, Company_Name, GST_No) VALUES ('Customer4','Address4','MobileNumber4','Company4','GSTNo4');
 INSERT INTO Customers(Name, Address, Mobile_Number, Company_Name, GST_No) VALUES ('Customer5','Address5','MobileNumber5','Company5','GSTNo5');
-INSERT INTO Customers(Name, Address, Mobile_Number, Company_Name, GST_No) VALUES ('Customer1','Address1','MobileNumber1','Company1','GSTNo1');
 INSERT INTO Quality(type) VALUES (1.1);
 INSERT INTO Quality(type) VALUES (2.2);
 INSERT INTO Quality(type) VALUES (3.3);
